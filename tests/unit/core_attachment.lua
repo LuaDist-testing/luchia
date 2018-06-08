@@ -1,32 +1,21 @@
-local common = require "luchia.tests.common"
+local lunatest = require "lunatest"
+local assert_equal = lunatest.assert_equal
+
+local common = require "common_test_functions"
 local attachment = require "luchia.core.attachment"
 
 local tests = {}
 
-local text_content_type = "text/plain"
-local custom_file_name = "custom_textfile1.txt"
-local bad_file = "badfile.txt"
+local text_content_type = common.attachment.text_content_type
+local custom_file_name = common.attachment.custom_file_name
+local bad_file = common.attachment.bad_file
 
-local custom_loader_file_path = "/tmp/textfile1.txt"
-local custom_loader_default_file_name = "textfile1.txt"
-local custom_loader_file_data = "foo."
+local custom_loader_file_path = common.attachment.custom_loader_file_path
+local custom_loader_default_file_name = common.attachment.custom_loader_default_file_name
+local custom_loader_file_data = common.attachment.custom_loader_file_data
 
-local function custom_loader_function()
-  return custom_loader_file_data
-end
-
-local function build_new_attachment(file_name)
-  local params = {
-    file_path = custom_loader_file_path,
-    content_type = text_content_type,
-    custom_loader_function = custom_loader_function,
-  }
-  if file_name then
-    params.file_name = file_name
-  end
-  local att = attachment:new(params)
-  return att
-end
+local custom_loader_function = common.attachment.custom_loader
+local build_new_attachment = common.attachment.build_new_attachment
 
 function tests.test_new_no_params_returns_nil()
   local att = attachment:new()
@@ -138,7 +127,7 @@ function tests.test_load_file_missing_file_returns_nil()
 end
 
 function tests.test_core_attachment_base64_encode_file()
-  require "mime"
+  local mime = require "mime"
   local att = build_new_attachment()
   local base64_data = att:base64_encode_file()
   assert_equal(mime.b64(custom_loader_file_data), base64_data)

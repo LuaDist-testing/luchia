@@ -1,38 +1,36 @@
 --- High-level utilities class.
+--
+-- Contains all high-level utility methods. This module should be used instead
+-- of the core modules when possible.
+--
+-- See the @{utilities.lua} example for more detail.
+--
+-- @classmod luchia.utilities
 -- @author Chad Phillips
--- @copyright 2011 Chad Phillips
+-- @copyright 2011-2015 Chad Phillips
 
 require "luchia.conf"
-local log = require "luchia.core.log"
+local logger = require "luchia.core.log"
+local log = logger.logger
 local server = require "luchia.core.server"
 local string = require "string"
 
 local setmetatable = setmetatable
 
---- High-level utilities class.
--- <p>Contains all high-level utility methods. This module should be used instead
--- of the core modules when possible.
--- See the method documentation for more detail, here is a quick primer:</p>
--- <p><code>
--- -- Require the class.<br />
--- local utilities = require "luchia.utilities"<br />
--- -- Build a new utilities object.<br />
--- local util = utilities:new()<br />
--- -- Grab server version.<br />
--- local response = util:version()<br />
--- </p></code>
-module("luchia.utilities")
+local _M = {}
 
 --- Create a new utilities handler object.
--- @param utilities_server
---   Optional. The server object to use for the server connection. If not
---   provided, a server object will be generated from the default server
+--
+-- @param server_params
+--   Optional. A table of server connection parameters (identical to
+--   <code>default.server</code> in @{luchia.conf}. If not provided,
+--   a server object will be generated from the default server
 --   configuration.
 -- @return A utilities handler object.
--- @usage util = luchia.utilities:new(server)
-function new(self, utilities_server)
+-- @usage util = luchia.utilities:new(server_params)
+function _M.new(self, server_params)
   local utilities = {}
-  utilities.server = server:new(utilities_server)
+  utilities.server = server:new(server_params)
   setmetatable(utilities, self)
   self.__index = self
   log:debug(string.format([[New utilities handler]]))
@@ -40,7 +38,8 @@ function new(self, utilities_server)
 end
 
 --- Make a utilities-related request to the server.
--- This is an internal method only.
+--
+-- @param self
 -- @param path
 --   Optional. The server path.
 -- @return The following four values, in this order: response_data,
@@ -54,9 +53,10 @@ local function utilities_get_call(self, path)
 end
 
 --- Get the database server version.
+--
 -- @return The database server version string.
 -- @usage util:version()
-function version(self)
+function _M:version()
   local response = utilities_get_call(self, "")
   if response and response.version then
     return response.version
@@ -64,29 +64,33 @@ function version(self)
 end
 
 --- Get the database server configuration.
--- @return Same values as utilities_get_call, response_data is a table of
+--
+-- @return Same values as @{utilities_get_call}, response_data is a table of
 --   database server configuration information.
 -- @usage util:config()
 -- @see utilities_get_call
-function config(self)
+function _M:config()
   return utilities_get_call(self, "_config")
 end
 
 --- Get the database server statistics.
--- @return Same values as utilities_get_call, response_data is a table of
+--
+-- @return Same values as @{utilities_get_call}, response_data is a table of
 --   database server statistics information.
 -- @usage util:stats()
 -- @see utilities_get_call
-function stats(self)
+function _M:stats()
   return utilities_get_call(self, "_stats")
 end
 
 --- Get the database server active tasks.
--- @return Same values as utilities_get_call, response_data is a list of
+--
+-- @return Same values as @{utilities_get_call}, response_data is a list of
 --   database server active tasks.
 -- @usage util:active_tasks()
 -- @see utilities_get_call
-function active_tasks(self)
+function _M:active_tasks()
   return utilities_get_call(self, "_active_tasks")
 end
 
+return _M

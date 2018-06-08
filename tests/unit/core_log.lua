@@ -1,11 +1,14 @@
-local log = require "luchia.core.log"
+local lunatest = require "lunatest"
+local assert_function = lunatest.assert_function
+local assert_table = lunatest.assert_table
+
+local logger = require "luchia.core.log"
+local log = logger.logger
 
 local tests = {}
 
 function tests.setup()
-   assert_table(luchia, "luchia")
-   assert_table(luchia.core, "luchia.core")
-   assert_table(luchia.core.log, "luchia.core.log")
+  assert_table(log, "luchia.core.log")
 end
 
 function tests.test_log_log_function()
@@ -34,6 +37,27 @@ end
 
 function tests.test_log_fatal_function()
   assert_function(log.fatal, "log:fatal")
+end
+
+function tests.test_set_logger_file_returns_file_logger()
+  local config = {
+    appender = "file",
+    level = "DEBUG",
+    format = "%level %message\n",
+    file = "/tmp/luchia.log",
+  }
+  logger:set_logger(config)
+  assert_table(log, "luchia.core.log")
+end
+
+function tests.test_set_logger_console_returns_console_logger()
+  local config = {
+    appender = "console",
+    level = "DEBUG",
+    format = "%level %message\n",
+  }
+  logger:set_logger(config)
+  assert_table(log, "luchia.core.log")
 end
 
 return tests

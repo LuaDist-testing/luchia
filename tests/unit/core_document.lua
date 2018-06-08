@@ -1,4 +1,8 @@
-local common = require "luchia.tests.common"
+local lunatest = require "lunatest"
+local assert_equal = lunatest.assert_equal
+local assert_table = lunatest.assert_table
+
+local common = require "common_test_functions"
 local document = require "luchia.core.document"
 local attachment = require "luchia.core.attachment"
 
@@ -229,6 +233,14 @@ end
 
 function tests.test_add_attachment_invalid_att_empty_document_returns_nil_return_document()
   local doc, return_document = document_with_attachment({})
+  assert_equal(nil, return_document, "return doc.document")
+end
+
+function tests.test_add_attachment_invalid_file_data_returns_nil()
+  local att = build_new_attachment()
+  att.file_data = nil
+  local doc = document:new()
+  local return_document = doc:add_attachment(att)
   assert_equal(nil, return_document, "return doc.document")
 end
 
