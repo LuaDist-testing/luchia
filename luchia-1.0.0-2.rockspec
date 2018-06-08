@@ -1,16 +1,16 @@
 -- This file was automatically generated for the LuaDist project.
 
 package = "luchia"
-version = "1.0.0-1"
+version = "1.0.0-2"
 -- LuaDist source
 source = {
-  tag = "1.0.0-1",
+  tag = "1.0.0-2",
   url = "git://github.com/LuaDist-testing/luchia.git"
 }
 -- Original source
 -- source = {
 --    url = "git://github.com/thehunmonkgroup/luchia.git",
---    tag = "v1.0.0",
+--    branch = "v1.0.0",
 -- }
 description = {
   summary = "Lua API for CouchDB.",
@@ -25,7 +25,7 @@ description = {
       various utility functions.
   ]],
   homepage = "https://github.com/thehunmonkgroup/luchia",
-  license = "3-clause BSD",
+  license = "Modified BSD",
 }
 dependencies = {
   "lua >= 5.1",
